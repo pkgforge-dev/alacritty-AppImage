@@ -50,6 +50,9 @@ cd ..
 wget -q "$URUNTIME" -O ./uruntime
 chmod +x ./uruntime
 
+# Keep the mount point (speeds up launch time)
+sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime
+
 #Add udpate info to runtime
 echo "Adding update information \"$UPINFO\" to runtime..."
 ./uruntime --appimage-addupdinfo "$UPINFO"
@@ -62,7 +65,18 @@ echo "Generating AppImage..."
 	--header uruntime \
 	-i ./AppDir -o "$PACKAGE"-"$VERSION"-anylinux-"$ARCH".AppImage
 
-echo "Generating zsync file..."
-zsyncmake *.AppImage -u *.AppImage
+# make appbundle
+UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH*.AppBundle.zsync"
+wget -qO ./pelf "https://github.com/xplshn/pelf/releases/latest/download/pelf_$ARCH"
+chmod +x ./pelf
+echo "Generating [dwfs]AppBundle...(Go runtime)"
+./pelf --add-appdir ./AppDir \
+	--compression "-C zstd:level=22 -S26 -B8" \
+	--appbundle-id="$PACKAGE-$VERSION" \
+	--appimage-compat --disable-use-random-workdir \
+	--add-updinfo "$UPINFO" \
+	--output-to "$PACKAGE-$VERSION-anylinux-$ARCH.dwfs.AppBundle"
 
+zsyncmake ./*.AppImage -u ./*.AppImage
+zsyncmake ./*.AppBundle -u ./*.AppBundle
 echo "All Done!"

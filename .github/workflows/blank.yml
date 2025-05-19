@@ -37,6 +37,7 @@ jobs:
           ./*-appimage.sh
           mkdir -p dist
           mv *.AppImage* dist/
+          mv *.AppBundle* dist/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.4.3
@@ -104,6 +105,7 @@ jobs:
           make_latest: true
           files: |
             *.AppImage*
+            *.AppBundle*
 
       - name: Snapshot Releaser
         uses: softprops/action-gh-release@v2
@@ -116,3 +118,4 @@ jobs:
           make_latest: false
           files: |
             *.AppImage*
+            *.AppBundle*

@@ -18,9 +18,9 @@ jobs:
           - runs-on: ubuntu-latest
             name: "alacritty build"
             arch: x86_64
-#          - runs-on: ubuntu-24.04-arm
-#            name: "alacritty build"
-#            arch: aarch64
+          - runs-on: ubuntu-24.04-arm
+            name: "alacritty build"
+            arch: aarch64
     container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
       - uses: actions/checkout@v4
@@ -71,9 +71,9 @@ jobs:
         with:
           name: AppImage-x86_64
 
-#      - uses: actions/download-artifact@v4.3.0
-#        with:
-#          name: AppImage-aarch64
+      - uses: actions/download-artifact@v4.3.0
+        with:
+          name: AppImage-aarch64
 
       - uses: actions/download-artifact@v4.3.0
         with:

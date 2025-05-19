@@ -32,7 +32,6 @@ jobs:
         run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
       - name: Make AppImage
-        if: ${{ matrix.optimized == false }}
         run: |
           chmod +x ./*-appimage.sh 
           ./*-appimage.sh
@@ -42,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: AppImage
+          name: AppImage-${{ matrix.arch }}
           path: 'dist'
 
       - name: Check version file

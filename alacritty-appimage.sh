@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+set -eux
 
 PACKAGE=alacritty
 DESKTOP=Alacritty.desktop
@@ -27,22 +27,14 @@ wget "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
 xvfb-run -d -- ./lib4bin -p -v -e -s -k \
 	/usr/bin/alacritty \
-	/usr/lib/libEGL* \
-	/usr/lib/libGL* \
+	/usr/lib/lib*GL* \
 	/usr/lib/dri/* \
 	/usr/lib/libXss.so* \
 	/usr/lib/pulseaudio/*
 
-echo 'unset ARGV0' > ./.env
-
 # Prepare sharun
-# for some reason an AppRun script is needed here
-# hardlinks nor symlinks to sharun work
-echo '#!/bin/sh
-CURRENTDIR="$(readlink -f "$(dirname "$0")")"
-exec "$CURRENTDIR"/bin/alacritty "$@"' > ./AppRun
-chmod +x ./AppRun
-
+echo 'unset ARGV0' > ./.env
+ln ./sharun ./AppRun
 ./sharun -g
 
 # MAKE APPIMAGE WITH URUNTIME

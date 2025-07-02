@@ -5,7 +5,6 @@ set -eux
 ARCH="$(uname -m)"
 REPO="https://github.com/alacritty/alacritty.git"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
-HACK="https://raw.githubusercontent.com/Samueru-sama/alacritty-AppImage/refs/heads/build-alacritty/hack.patch"
 
 case "$ARCH" in
 	'x86_64')  PKG_TYPE='x86_64.pkg.tar.zst';;
@@ -69,9 +68,9 @@ fi
 # rustc: symbol lookup error: /usr/lib/librustc_driver-fa1421cc2e9f32b2.so: undefined symbol: LLVMInitializeARMTargetInfo, version LLVM_20.1
 echo "Building alacritty..."
 echo "---------------------------------------------------------------"
-(
+
+cp -v ./hack.patch ./alacritty && (
 	cd ./alacritty
-	wget --retry-connrefused --tries=30 "$HACK" -O ./hack.patch
 	patch -p1 -i ./hack.patch
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	CARGO_INCREMENTAL=0 cargo build --release --locked --offline

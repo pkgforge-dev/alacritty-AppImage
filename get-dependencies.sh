@@ -20,33 +20,33 @@ OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/
 echo "Installing build dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
-	base-devel \
-	cargo \
-	cmake \
-	curl \
+	base-devel         \
+	cargo              \
+	cmake              \
+	curl               \
 	desktop-file-utils \
-	fontconfig \
-	freetype2 \
-	gdb \
-	git \
-	libxcb \
-	libxcursor \
-	libxi \
-	libxkbcommon \
-	libxkbcommon-x11 \
-	libxrandr \
-	libxtst \
-	mesa    \
-	ncurses \
-	patchelf \
-	pipewire-audio \
-	pulseaudio \
-	pulseaudio-alsa \
-	rust \
-	scdoc \
-	strace \
-	wget \
-	xorg-server-xvfb \
+	fontconfig         \
+	freetype2          \
+	gdb                \
+	git                \
+	libxcb             \
+	libxcursor         \
+	libxi              \
+	libxkbcommon       \
+	libxkbcommon-x11   \
+	libxrandr          \
+	libxtst            \
+	mesa               \
+	ncurses            \
+	patchelf           \
+	pipewire-audio     \
+	pulseaudio         \
+	pulseaudio-alsa    \
+	rust               \
+	scdoc              \
+	strace             \
+	wget               \
+	xorg-server-xvfb   \
 	zsync
 
 # Determine to build nightly or stable

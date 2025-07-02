@@ -69,7 +69,7 @@ echo "Generating [dwfs]AppBundle..."
 	--appimage-compat --disable-use-random-workdir \
 	--add-updinfo "$UPINFO"                        \
 	--add-appdir ./AppDir                          \
-	--output-to ./alacritty-$VERSION-anylinux-$ARCH.dwfs.AppBundle"
+	--output-to ./alacritty-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
 zsyncmake ./*.AppImage -u ./*.AppImage
 zsyncmake ./*.AppBundle -u ./*.AppBundle

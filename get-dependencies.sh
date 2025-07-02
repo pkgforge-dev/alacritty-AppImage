@@ -5,6 +5,7 @@ set -eux
 ARCH="$(uname -m)"
 REPO="https://github.com/alacritty/alacritty.git"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
+HACK="https://raw.githubusercontent.com/Samueru-sama/alacritty-AppImage/refs/heads/build-alacritty/hack.patch"
 
 case "$ARCH" in
 	'x86_64')  PKG_TYPE='x86_64.pkg.tar.zst';;
@@ -20,33 +21,34 @@ OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/
 echo "Installing build dependencies..."
 echo "---------------------------------------------------------------"
 pacman -Syu --noconfirm \
-	base-devel         \
-	cargo              \
-	cmake              \
-	curl               \
-	desktop-file-utils \
-	fontconfig         \
-	freetype2          \
-	gdb                \
-	git                \
-	libxcb             \
-	libxcursor         \
-	libxi              \
-	libxkbcommon       \
-	libxkbcommon-x11   \
-	libxrandr          \
-	libxtst            \
-	mesa               \
-	ncurses            \
-	patchelf           \
-	pipewire-audio     \
-	pulseaudio         \
-	pulseaudio-alsa    \
-	rust               \
-	scdoc              \
-	strace             \
-	wget               \
-	xorg-server-xvfb   \
+	base-devel          \
+	cargo               \
+	cmake               \
+	curl                \
+	desktop-file-utils  \
+	fontconfig          \
+	freetype2           \
+	gdb                 \
+	git                 \
+	libxcb              \
+	libxcursor          \
+	libxi               \
+	libxkbcommon        \
+	libxkbcommon-x11    \
+	libxrandr           \
+	libxtst             \
+	mesa                \
+	ncurses             \
+	patch               \
+	patchelf            \
+	pipewire-audio      \
+	pulseaudio          \
+	pulseaudio-alsa     \
+	rust                \
+	scdoc               \
+	strace              \
+	wget                \
+	xorg-server-xvfb    \
 	zsync
 
 # Determine to build nightly or stable
@@ -69,10 +71,11 @@ echo "Building alacritty..."
 echo "---------------------------------------------------------------"
 (
 	cd ./alacritty
-	#patch -p1 -i ./hack.patch
+	wget --retry-connrefused --tries=30 "$HACK" -O ./hack.patch
+	patch -p1 -i ./hack.patch
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	CARGO_INCREMENTAL=0 cargo build --release --locked --offline
-	#CARGO_INCREMENTAL=0 cargo test --locked --offline
+	CARGO_INCREMENTAL=0 cargo test --locked --offline
 	echo "$VERSION" > ~/version
 )
 

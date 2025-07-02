@@ -45,12 +45,6 @@ jobs:
           name: AppImage-${{ matrix.arch }}
           path: 'dist'
 
-      - name: Check version file
-        if: ${{ matrix.optimized == false }}
-        run: |
-          cat ~/version
-          echo "APP_VERSION=$(cat ~/version)" >> "${GITHUB_ENV}"
-
       - name: Upload version file
         uses: actions/upload-artifact@v4.6.2
         with:

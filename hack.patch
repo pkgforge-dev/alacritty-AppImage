@@ -1,8 +1,8 @@
 diff --git a/alacritty/src/main.rs b/alacritty/src/main.rs
-index 7a4109a6..a632b746 100644
+index 7a4109a6..5ad43046 100644
 --- a/alacritty/src/main.rs
 +++ b/alacritty/src/main.rs
-@@ -68,6 +68,16 @@ fn main() -> Result<(), Box<dyn Error>> {
+@@ -68,6 +68,17 @@ fn main() -> Result<(), Box<dyn Error>> {
      #[cfg(windows)]
      panic::attach_handler();
  
@@ -11,6 +11,7 @@ index 7a4109a6..a632b746 100644
 +        env::remove_var("APPDIR");
 +        env::remove_var("GSETTINGS_SCHEMA_DIR");
 +        env::remove_var("LIBGL_DRIVERS_PATH");
++        env::remove_var("LIBVA_DRIVERS_PATH");
 +        env::remove_var("GBM_BACKENDS_PATH");
 +        env::remove_var("__EGL_VENDOR_LIBRARY_DIRS");
 +        env::remove_var("XDG_DATA_DIRS");

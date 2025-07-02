@@ -29,6 +29,7 @@ rm -rf ./alacritty && (
 		/usr/lib/gbm/*                \
 		/usr/lib/libXss.so*           \
 		/usr/lib/pulseaudio/*
+	rm -f ./sharun-aio
 	
 	# Prepare sharun
 	echo 'unset ARGV0' > ./.env

@@ -1,10 +1,10 @@
 diff --git a/alacritty/src/main.rs b/alacritty/src/main.rs
-index 7a4109a6..5ad43046 100644
+index 7a4109a6..8df0e48c 100644
 --- a/alacritty/src/main.rs
 +++ b/alacritty/src/main.rs
-@@ -68,6 +68,17 @@ fn main() -> Result<(), Box<dyn Error>> {
-     #[cfg(windows)]
-     panic::attach_handler();
+@@ -157,6 +157,16 @@ fn alacritty(mut options: Options) -> Result<(), Box<dyn Error>> {
+     #[cfg(not(any(feature = "x11", target_os = "macos", windows)))]
+     info!("Running on Wayland");
  
 +    // HORRIBLE HACK DO NOT GET INSPIRED BY IT!
 +    if env::var_os("APPDIR").is_some() {
@@ -14,9 +14,8 @@ index 7a4109a6..5ad43046 100644
 +        env::remove_var("LIBVA_DRIVERS_PATH");
 +        env::remove_var("GBM_BACKENDS_PATH");
 +        env::remove_var("__EGL_VENDOR_LIBRARY_DIRS");
-+        env::remove_var("XDG_DATA_DIRS");
 +    }
 +
-     // When linked with the windows subsystem windows won't automatically attach
-     // to the console of the parent process, so we do it explicitly. This fails
-     // silently if the parent has no console.
+     // Load configuration file.
+     let config = config::load(&mut options);
+     log_config_path(&config);

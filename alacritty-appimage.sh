@@ -24,11 +24,11 @@ rm -rf ./alacritty && (
 	xvfb-run -a -- \
 		./sharun-aio l -p -v -e -s -k \
 		./shared/bin/alacritty        \
-		/usr/lib/lib*GL*              \
+		/usr/lib/libEGL*              \
+		/usr/lib/libGLX*              \
 		/usr/lib/dri/*                \
 		/usr/lib/gbm/*                \
-		/usr/lib/libXss.so*           \
-		/usr/lib/pulseaudio/*
+		/usr/lib/libXss.so*
 	rm -f ./sharun-aio
 	
 	# Prepare sharun

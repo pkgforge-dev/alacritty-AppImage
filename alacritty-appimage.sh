@@ -6,7 +6,7 @@ ARCH="$(uname -m)"
 VERSION="$(cat ~/version)"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
-SHARUN="https://github.com/VHSgunzo/sharun/releases/latest/download/sharun-$ARCH-aio"
+SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 UPDATER="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/self-updater.bg.hook"
 
@@ -16,31 +16,18 @@ cp -v ./alacritty/target/release/alacritty             ./AppDir/shared/bin
 cp -v ./alacritty/extra/linux/Alacritty.desktop        ./AppDir
 cp -v ./alacritty/extra/logo/compat/alacritty-term.svg ./AppDir
 cp -v ./alacritty/extra/logo/compat/alacritty-term.svg ./AppDir/.DirIcon
+rm -rf ./alacritty 
 
-rm -rf ./alacritty && ( 
-	cd ./AppDir
-	# ADD LIBRARIES
-	wget --retry-connrefused --tries=30 "$SHARUN" -O ./sharun-aio
-	chmod +x ./sharun-aio
-	xvfb-run -a -- \
-		./sharun-aio l -p -v -e -s -k \
-		./shared/bin/alacritty        \
-		/usr/lib/libEGL*              \
-		/usr/lib/libGLX*              \
-		/usr/lib/dri/*                \
-		/usr/lib/gbm/*                \
-		/usr/lib/libXss.so*
-	rm -f ./sharun-aio
+# ADD LIBRARIES
+wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
+chmod +x ./quick-sharun
+DEPLOY_OPENGL=1 ./quick-sharun ./AppDir/shared/bin/alacritty
+echo 'unset ARGV0' > ./AppDir/.env
+ln ./AppDir/sharun ./AppDir/AppRun
 
-	# add self updater script, run alacritty-update in alacritty to update
-	wget --retry-connrefused --tries=30 "$UPDATER" -O ./bin/alacritty-update
-	chmod +x ./bin/alacritty-update
-	
-	# Prepare sharun
-	echo 'unset ARGV0' > ./.env
-	ln ./sharun ./AppRun
-	./sharun -g
-)
+# add self updater script, run alacritty-update in alacritty to update
+wget --retry-connrefused --tries=30 "$UPDATER" -O ./AppDir/bin/alacritty-update
+chmod +x ./AppDir/bin/alacritty-update
 
 # MAKE APPIMAGE WITH URUNTIME
 wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime

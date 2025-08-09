@@ -34,6 +34,7 @@ rm -rf ./alacritty && (
 
 	# add self updater script, run alacritty-update in alacritty to update
 	wget --retry-connrefused --tries=30 "$UPDATER" -O ./bin/alacritty-update
+	chmod +x ./bin/alacritty-update
 	
 	# Prepare sharun
 	echo 'unset ARGV0' > ./.env

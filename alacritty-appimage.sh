@@ -10,6 +10,7 @@ UPDATER="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/
 
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
 export OUTNAME=alacritty-"$VERSION"-anylinux-"$ARCH".AppImage
+export URUNTIME_PRELOAD=1 # really needed here
 
 # Prepare AppDir
 mkdir -p ./AppDir/shared/bin

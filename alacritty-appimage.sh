@@ -1,14 +1,15 @@
 #!/bin/sh
 
-set -ex
+set -eux
 
 ARCH="$(uname -m)"
 VERSION="$(cat ~/version)"
-URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
-URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
 SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
-UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
+URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 UPDATER="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/self-updater.bg.hook"
+
+export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export OUTNAME=alacritty-"$VERSION"-anylinux-"$ARCH".AppImage
 
 # Prepare AppDir
 mkdir -p ./AppDir/shared/bin
@@ -30,26 +31,9 @@ wget --retry-connrefused --tries=30 "$UPDATER" -O ./AppDir/bin/alacritty-update
 chmod +x ./AppDir/bin/alacritty-update
 
 # MAKE APPIMAGE WITH URUNTIME
-wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime
-wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O  ./uruntime-lite
-chmod +x ./uruntime*
-
-# Keep the mount point (speeds up launch time)
-sed -i 's|URUNTIME_MOUNT=[0-9]|URUNTIME_MOUNT=0|' ./uruntime-lite
-
-# Add udpate info to runtime
-echo "Adding update information \"$UPINFO\" to runtime..."
-./uruntime-lite --appimage-addupdinfo "$UPINFO"
-
-echo "Generating AppImage..."
-./uruntime \
-	--appimage-mkdwarfs -f               \
-	--set-owner 0 --set-group 0          \
-	--no-history --no-create-timestamp   \
-	--compression zstd:level=22 -S26 -B8 \
-	--header uruntime-lite               \
-	-i ./AppDir                          \
-	-o ./alacritty-"$VERSION"-anylinux-"$ARCH".AppImage
+wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage
+chmod +x .uruntime2appimage
+./uruntime2appimage
 
 # make appbundle
 UPINFO="$(echo "$UPINFO" | sed 's#.AppImage.zsync#*.AppBundle.zsync#g')"
@@ -65,6 +49,5 @@ echo "Generating [dwfs]AppBundle..."
 	--add-appdir ./AppDir                          \
 	--output-to ./alacritty-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
-zsyncmake ./*.AppImage -u ./*.AppImage
 zsyncmake ./*.AppBundle -u ./*.AppBundle
 echo "All Done!"

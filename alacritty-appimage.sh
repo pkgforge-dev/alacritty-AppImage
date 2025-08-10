@@ -32,7 +32,7 @@ chmod +x ./AppDir/bin/alacritty-update
 
 # MAKE APPIMAGE WITH URUNTIME
 wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage
-chmod +x .uruntime2appimage
+chmod +x ./uruntime2appimage
 ./uruntime2appimage
 
 # make appbundle

@@ -8,27 +8,19 @@ SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/h
 URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 UPDATER="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/self-updater.bg.hook"
 
+export ADD_HOOKS="self-updater.bg.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
 export OUTNAME=alacritty-"$VERSION"-anylinux-"$ARCH".AppImage
+export DESKTOP=./alacritty/extra/linux/Alacritty.desktop  
+export ICON=./alacritty/extra/logo/compat/alacritty-term.svg
 export URUNTIME_PRELOAD=1 # really needed here
 export DEPLOY_OPENGL=1
-
-# Prepare AppDir
-mkdir -p ./AppDir/shared/bin
-cp -v ./alacritty/target/release/alacritty             ./AppDir/shared/bin 
-cp -v ./alacritty/extra/linux/Alacritty.desktop        ./AppDir
-cp -v ./alacritty/extra/logo/compat/alacritty-term.svg ./AppDir
-rm -rf ./alacritty 
 
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
 chmod +x ./quick-sharun
-./quick-sharun ./AppDir/shared/bin/alacritty
+./quick-sharun ./alacritty/target/release/alacritty
 echo 'unset ARGV0' > ./AppDir/.env
-
-# add self updater script, run alacritty-update in alacritty to update
-wget --retry-connrefused --tries=30 "$UPDATER" -O ./AppDir/bin/alacritty-update
-chmod +x ./AppDir/bin/alacritty-update
 
 # MAKE APPIMAGE WITH URUNTIME
 wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage

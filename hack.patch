@@ -1,8 +1,8 @@
 diff --git a/alacritty/src/main.rs b/alacritty/src/main.rs
-index 7a4109a6..8df0e48c 100644
+index eff1a0a2..a15b7edc 100644
 --- a/alacritty/src/main.rs
 +++ b/alacritty/src/main.rs
-@@ -157,6 +157,16 @@ fn alacritty(mut options: Options) -> Result<(), Box<dyn Error>> {
+@@ -157,6 +157,17 @@ fn alacritty(mut options: Options) -> Result<(), Box<dyn Error>> {
      #[cfg(not(any(feature = "x11", target_os = "macos", windows)))]
      info!("Running on Wayland");
  
@@ -14,6 +14,7 @@ index 7a4109a6..8df0e48c 100644
 +        env::remove_var("LIBVA_DRIVERS_PATH");
 +        env::remove_var("GBM_BACKENDS_PATH");
 +        env::remove_var("__EGL_VENDOR_LIBRARY_DIRS");
++        env::remove_var("GCONV_PATH");
 +    }
 +
      // Load configuration file.

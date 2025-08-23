@@ -4,18 +4,9 @@ set -eux
 
 ARCH="$(uname -m)"
 REPO="https://github.com/alacritty/alacritty.git"
+EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
-
-case "$ARCH" in
-	'x86_64')  PKG_TYPE='x86_64.pkg.tar.zst';;
-	'aarch64') PKG_TYPE='aarch64.pkg.tar.xz';;
-	''|*) echo "Unknown arch: $ARCH"; exit 1;;
-esac
-
-LLVM_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-$PKG_TYPE"
-MESA_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/mesa-nano-$PKG_TYPE"
-LIBXML_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/libxml2-iculess-$PKG_TYPE"
-OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/opus-nano-$PKG_TYPE"
+PATCH="$PWD"/hack.patch
 
 echo "Installing build dependencies..."
 echo "---------------------------------------------------------------"
@@ -24,7 +15,6 @@ pacman -Syu --noconfirm \
 	cargo               \
 	cmake               \
 	curl                \
-	desktop-file-utils  \
 	fontconfig          \
 	freetype2           \
 	gdb                 \
@@ -39,7 +29,6 @@ pacman -Syu --noconfirm \
 	mesa                \
 	ncurses             \
 	patch               \
-	patchelf            \
 	pipewire-audio      \
 	pulseaudio          \
 	pulseaudio-alsa     \
@@ -68,27 +57,17 @@ fi
 # rustc: symbol lookup error: /usr/lib/librustc_driver-fa1421cc2e9f32b2.so: undefined symbol: LLVMInitializeARMTargetInfo, version LLVM_20.1
 echo "Building alacritty..."
 echo "---------------------------------------------------------------"
-
-cp -v ./hack.patch ./alacritty && (
+(
 	cd ./alacritty
-	patch -p1 -i ./hack.patch
+	patch -p1 -i "$PATCH"
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	CARGO_INCREMENTAL=0 cargo build --release --locked --offline
 	CARGO_INCREMENTAL=0 cargo test --locked --offline
 	echo "$VERSION" > ~/version
 )
 
-
-echo "Installing debloated pckages..."
+echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
-wget --retry-connrefused --tries=30 "$LLVM_URL"   -O  ./llvm-libs.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$MESA_URL"   -O  ./mesa.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$LIBXML_URL" -O  ./libxml2.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$OPUS_URL"   -O  ./opus.pkg.tar.zst
-
-pacman -U --noconfirm ./*.pkg.tar.zst
-rm -f ./*.pkg.tar.zst
-
-
-echo "All done!"
-echo "---------------------------------------------------------------"
+wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
+chmod +x ./get-debloated-pkgs.sh
+./get-debloated-pkgs --add-opengl

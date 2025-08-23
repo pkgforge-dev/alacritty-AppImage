@@ -29,9 +29,6 @@ pacman -Syu --noconfirm \
 	mesa                \
 	ncurses             \
 	patch               \
-	pipewire-audio      \
-	pulseaudio          \
-	pulseaudio-alsa     \
 	rust                \
 	scdoc               \
 	strace              \
@@ -52,6 +49,7 @@ else
 		| ./gron.awk | awk -F'=|"' '/name/ {print $3; exit}')
 	git clone --recursive -j$(nproc) --branch "$VERSION" --single-branch "$REPO" ./alacritty
 fi
+echo "$VERSION" > ~/version
 
 # We need to build alacritty here and not later as it turns out rust sucks and will fail with this error when using the smaller llvm
 # rustc: symbol lookup error: /usr/lib/librustc_driver-fa1421cc2e9f32b2.so: undefined symbol: LLVMInitializeARMTargetInfo, version LLVM_20.1
@@ -63,11 +61,10 @@ echo "---------------------------------------------------------------"
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	CARGO_INCREMENTAL=0 cargo build --release --locked --offline
 	CARGO_INCREMENTAL=0 cargo test --locked --offline
-	echo "$VERSION" > ~/version
 )
 
 echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
 wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
 chmod +x ./get-debloated-pkgs.sh
-./get-debloated-pkgs --add-opengl
+./get-debloated-pkgs.sh --add-opengl

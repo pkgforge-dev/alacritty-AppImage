@@ -4,7 +4,7 @@ set -eux
 
 ARCH="$(uname -m)"
 VERSION="$(cat ~/version)"
-SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
+SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/execv-hook/useful-tools/quick-sharun.sh"
 URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 UPDATER="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/self-updater.bg.hook"
 
@@ -15,6 +15,7 @@ export DESKTOP=./alacritty/extra/linux/Alacritty.desktop
 export ICON=./alacritty/extra/logo/compat/alacritty-term.svg
 export URUNTIME_PRELOAD=1 # really needed here
 export DEPLOY_OPENGL=1
+export EXEC_WRAPPER=1 # needed here since this will launch other processes
 
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun

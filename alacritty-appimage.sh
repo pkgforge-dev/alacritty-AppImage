@@ -45,6 +45,7 @@ echo "Generating [dwfs]AppBundle..."
 zsyncmake ./*.AppBundle -u ./*.AppBundle
 
 mkdir -p ./dist
-mv ./*.AppImage*  ./dist
-mv ./*.AppBundle* ./dist
+mv -v ./*.AppImage*  ./dist
+mv -v ./*.AppBundle* ./dist
+mv -v ~/version      ./dist
 echo "All Done!"

@@ -43,4 +43,8 @@ echo "Generating [dwfs]AppBundle..."
 	--output-to ./alacritty-"$VERSION"-anylinux-"$ARCH".dwfs.AppBundle
 
 zsyncmake ./*.AppBundle -u ./*.AppBundle
+
+mkdir -p ./dist
+mv ./*.AppImage*  ./dist
+mv ./*.AppBundle* ./dist
 echo "All Done!"

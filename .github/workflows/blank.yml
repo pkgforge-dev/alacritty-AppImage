@@ -28,29 +28,22 @@ jobs:
           persist-credentials: false
 
       - name: Install dependencies
-        if: always()
         run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
       - name: Make AppImage
+        run: chmod +x ./*-appimage.sh  && ./*-appimage.sh
+
+      - name: Read version and Get date
         run: |
-          chmod +x ./*-appimage.sh 
-          ./*-appimage.sh
-          mkdir -p dist
-          mv *.AppImage* dist/
-          mv *.AppBundle* dist/
+          cat ./version
+          echo "VERSION=$(cat ./version)" >> "${GITHUB_ENV}"
+          echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
           name: AppImage-${{ matrix.arch }}
           path: 'dist'
-
-      - name: Upload version file
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: version
-          path: ~/version
-          overwrite: true
 
   release:
     if: ${{ github.ref_name == 'main' }}
@@ -65,15 +58,6 @@ jobs:
       - uses: actions/download-artifact@v4.3.0
         with:
           name: AppImage-aarch64
-
-      - uses: actions/download-artifact@v4.3.0
-        with:
-          name: version
-
-      - name: Read version and Get date
-        run: |
-          echo "VERSION=$(cat version)" >> "${GITHUB_ENV}"
-          echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
       - name: Release Artifacts
         uses: softprops/action-gh-release@v2.2.2

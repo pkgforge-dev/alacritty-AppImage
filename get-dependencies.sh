@@ -6,7 +6,6 @@ ARCH="$(uname -m)"
 REPO="https://github.com/alacritty/alacritty.git"
 EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
 GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
-PATCH="$PWD"/hack.patch
 
 echo "Installing build dependencies..."
 echo "---------------------------------------------------------------"
@@ -57,7 +56,6 @@ echo "Building alacritty..."
 echo "---------------------------------------------------------------"
 (
 	cd ./alacritty
-	patch -p1 -i "$PATCH"
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	CARGO_INCREMENTAL=0 cargo build --release --locked --offline
 	CARGO_INCREMENTAL=0 cargo test --locked --offline

@@ -35,7 +35,8 @@ jobs:
 
       - name: Read version and Get date
         run: |
-          echo "VERSION=$(cat version)" >> "${GITHUB_ENV}"
+          cat ./version
+          echo "VERSION=$(cat ./version)" >> "${GITHUB_ENV}"
           echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
       - name: Upload artifact

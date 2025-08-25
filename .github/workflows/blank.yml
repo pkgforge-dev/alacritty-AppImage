@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Get dependencies
         run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
 
       - name: Make AppImage
@@ -42,8 +42,6 @@ jobs:
     needs: [build]
     permissions: write-all
     runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ needs.build.outputs.VERSION }}
     steps:
       - uses: actions/download-artifact@v4.3.0
         with:

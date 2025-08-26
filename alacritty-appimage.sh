@@ -15,6 +15,7 @@ export ICON=./alacritty/extra/logo/compat/alacritty-term.svg
 export URUNTIME_PRELOAD=1 # really needed here
 export DEPLOY_OPENGL=1
 export EXEC_WRAPPER=1 # needed here since this will launch other processes
+export EXEC_WRAPPER_SOURCE=https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/d125ba01db788300bd77e7df9ebb811570d3ee35/useful-tools/exec.c
 
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun

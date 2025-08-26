@@ -20,7 +20,6 @@ export EXEC_WRAPPER=1 # needed here since this will launch other processes
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
 chmod +x ./quick-sharun
 ./quick-sharun ./alacritty/target/release/alacritty
-echo 'unset ARGV0' > ./AppDir/.env
 
 # MAKE APPIMAGE WITH URUNTIME
 wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage

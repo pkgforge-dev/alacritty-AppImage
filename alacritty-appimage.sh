@@ -19,7 +19,7 @@ export EXEC_WRAPPER=1 # needed here since this will launch other processes
 # ADD LIBRARIES
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
 chmod +x ./quick-sharun
-./quick-sharun ./alacritty/target/release/alacritty
+./quick-sharun ./alacritty/target/release/alacritty /usr/lib/libedit.so*
 
 # MAKE APPIMAGE WITH URUNTIME
 wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage

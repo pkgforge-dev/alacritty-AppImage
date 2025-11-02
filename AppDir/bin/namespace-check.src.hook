@@ -16,6 +16,8 @@ if ! is_cmd fusermount && ! is_cmd fusermount3 && [ ! -w "$APPDIR" ]; then
 		ln -sfn "$APPDIR"/lib    "$bypassdir"
 		ln -sfn "$APPDIR"/shared "$bypassdir"
 
+		ln -f "$bypassdir"/sharun "$bypassdir"/bin/alacritty
+
 		export CURRENTDIR="$bypassdir"
 	fi
 fi

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+bypassdir="$APPDIR".namespace-bypass
+
+is_cmd() {
+  command -v "$1" 1>/dev/null
+}
+
+if ! is_cmd fusermount && ! is_cmd fusermount3 && [ ! -w "$APPDIR" ]; then
+	if mkdir -p "$bypassdir"/bin; then
+		cp "$APPDIR"/sharun*  "$bypassdir"
+		cp "$APPDIR"/.env     "$bypassdir" 2>/dev/null || :
+		cp "$APPDIR"/.preload "$bypassdir" 2>/dev/null || :
+
+		ln -sfn "$APPDIR"/etc    "$bypassdir" 2>/dev/null || :
+		ln -sfn "$APPDIR"/lib    "$bypassdir"
+		ln -sfn "$APPDIR"/shared "$bypassdir"
+
+		export CURRENTDIR="$bypassdir"
+	fi
+fi

@@ -5,10 +5,10 @@ set -eux
 ARCH="$(uname -m)"
 VERSION="$(cat ~/version)"
 SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
-URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 
 export ADD_HOOKS="self-updater.bg.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export OUTPUT_APPIMAGE=1
 export OUTNAME=alacritty-"$VERSION"-anylinux-"$ARCH".AppImage
 export DESKTOP=./alacritty/extra/linux/Alacritty.desktop  
 export ICON=./alacritty/extra/logo/compat/alacritty-term.svg
@@ -20,11 +20,6 @@ export EXEC_WRAPPER=1 # needed here since this will launch other processes
 wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
 chmod +x ./quick-sharun
 ./quick-sharun ./alacritty/target/release/alacritty /usr/lib/libedit.so*
-
-# MAKE APPIMAGE WITH URUNTIME
-wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage
-chmod +x ./uruntime2appimage
-./uruntime2appimage
 
 # make appbundle
 UPINFO="$(echo "$UPINFO" | sed 's#.AppImage.zsync#*.AppBundle.zsync#g')"

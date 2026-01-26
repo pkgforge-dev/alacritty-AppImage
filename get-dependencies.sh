@@ -1,11 +1,8 @@
 #!/bin/sh
 
-set -eux
+set -eu
 
-ARCH="$(uname -m)"
-REPO="https://github.com/alacritty/alacritty.git"
-EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
-GRON="https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk"
+ARCH=$(uname -m)
 
 echo "Installing build dependencies..."
 echo "---------------------------------------------------------------"
@@ -13,27 +10,28 @@ pacman -Syu --noconfirm \
 	base-devel          \
 	cargo               \
 	cmake               \
-	curl                \
 	fontconfig          \
 	freetype2           \
 	gdb                 \
-	git                 \
-	libxcb              \
-	libxcursor          \
-	libxi               \
-	libxkbcommon        \
-	libxkbcommon-x11    \
 	libxrandr           \
 	libxtst             \
-	mesa                \
 	ncurses             \
 	patch               \
 	rust                \
-	scdoc               \
-	strace              \
-	wget                \
-	xorg-server-xvfb    \
-	zsync
+	scdoc
+
+echo "Installing debloated packages..."
+echo "---------------------------------------------------------------"
+# Do not install the smaller llvm as that causes the rust compiler to cry
+# rustc: symbol lookup error: /usr/lib/librustc_driver-fa1421cc2e9f32b2.so: undefined symbol: LLVMInitializeARMTargetInfo, version LLVM_20.1
+get-debloated-pkgs --add-common --prefer-nano ! llvm-libs
+
+# Comment this out if you need an AUR package
+#make-aur-package PACKAGENAME
+
+REPO=https://github.com/alacritty/alacritty.git
+EXTRA_PACKAGES=https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh
+GRON=https://raw.githubusercontent.com/xonixx/gron.awk/refs/heads/main/gron.awk
 
 # Determine to build nightly or stable
 if [ "DEVEL" = 'true' ]; then
@@ -50,19 +48,18 @@ else
 fi
 echo "$VERSION" > ~/version
 
-# We need to build alacritty here and not later as it turns out rust sucks and will fail with this error when using the smaller llvm
-# rustc: symbol lookup error: /usr/lib/librustc_driver-fa1421cc2e9f32b2.so: undefined symbol: LLVMInitializeARMTargetInfo, version LLVM_20.1
 echo "Building alacritty..."
 echo "---------------------------------------------------------------"
 (
 	cd ./alacritty
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
-	CARGO_INCREMENTAL=0 cargo build --release --locked --offline
-	CARGO_INCREMENTAL=0 cargo test --locked --offline
+	export CARGO_INCREMENTAL=0
+	cargo build --release --locked --offline
+	cargo test --locked --offline
 )
 
-echo "Installing debloated packages..."
-echo "---------------------------------------------------------------"
-wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
-chmod +x ./get-debloated-pkgs.sh
-./get-debloated-pkgs.sh --add-opengl --prefer-nano
+mkdir -p ./AppDir/bin
+mv -v ./alacritty/target/release/alacritty              ./AppDir/bin
+mv -v ./alacritty/extra/linux/Alacritty.desktop         ./AppDir
+cp -v ./alacritty/extra/logo/compat/alacritty-term.svg  ./AppDir
+mv -v ./alacritty/extra/logo/compat/alacritty-term.svg  ./AppDir/.DirIcon
